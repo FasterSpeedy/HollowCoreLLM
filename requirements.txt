@@ -1,0 +1,5 @@
+torch>=2.2.0
+datasets>=2.19.0
+huggingface_hub>=0.23.0
+bitsandbytes
+# flash-attn + flash-linear-attention[cuda]: CUDA builds in modal_app.py image

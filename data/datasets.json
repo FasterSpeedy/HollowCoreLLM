@@ -1,0 +1,43 @@
+{
+  "curriculum": {
+    "stable_steps": 30,
+    "mix_start_step": 30,
+    "initial_mix": {
+      "stable": 1.0
+    },
+    "mixed_proportions": {
+      "stable": 0.15,
+      "web": 0.15,
+      "code": 0.15,
+      "tool_call": 0.55
+    },
+    "replay_floor": 0.1
+  },
+  "sources": {
+    "stable": {
+      "kind": "hf_text",
+      "dataset_id": "roneneldan/TinyStories",
+      "split": "train",
+      "text_key": "text"
+    },
+    "web": {
+      "kind": "hf_text",
+      "dataset_id": "HuggingFaceFW/fineweb-edu",
+      "config": "sample-10BT",
+      "split": "train",
+      "text_key": "text"
+    },
+    "code": {
+      "kind": "hf_text",
+      "dataset_id": "codeparrot/codeparrot-clean-train",
+      "split": "train",
+      "text_key": "content"
+    },
+    "tool_call": {
+      "kind": "glaive",
+      "dataset_id": "glaiveai/glaive-function-calling-v2",
+      "split": "train",
+      "chat_key": "chat"
+    }
+  }
+}

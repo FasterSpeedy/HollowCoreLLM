@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Secrets / environment
+.env
+.env.*
+
+# Model weights / checkpoints / manifests (huge or generated — never commit)
+*.pt
+*.ckpt
+*.safetensors
+checkpoints/
+*.manifest.json
+latest_manifest.json
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Editors / OS
+.vscode/
+.idea/
+.cursor/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Local-only docs (not part of the runnable architecture)
+COMMENT_MAP.txt
+REPORT.md
+STATUS.txt
+BRANCH_POLICY.txt
+data/DATASETS-CATALOG.md
+data/datasets.example.json
