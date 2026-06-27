@@ -58,9 +58,10 @@ class HollowCoreLLM(nn.Module):
         self.tool_head = ToolPolicyHead(self.cfg)
         if self.cfg.jepa_bridge:
             self.jepa_bridge_proj = nn.Linear(self.cfg.thought_dim, self.cfg.hidden_size, bias=False)
-            nn.init.zeros_(self.jepa_bridge_proj.weight)
             self.bridge_gate = nn.Parameter(torch.ones(()))
         self.apply(self._init_weights)
+        if self.cfg.jepa_bridge:
+            nn.init.zeros_(self.jepa_bridge_proj.weight)
 
     def _init_weights(self, module: nn.Module) -> None:
         if isinstance(module, nn.Linear):
