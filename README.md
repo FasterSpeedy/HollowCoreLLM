@@ -1,3 +1,6 @@
+**HollowCoreLLM is an experimental research prototype, not a trained foundation model.
+The current goal is to validate whether the architecture can train stably at small scale before attempting larger long-context runs.**
+
 # HollowCoreLLM
 
 I don't have a PhD or a math background. I'm a self-taught builder who learns by connecting dots. I built HollowCoreLLM because I saw a way to combine byte-level tokenization, DeltaNet-2, and JEPA heads that standard academia isn't looking at. I'm using AI to write the heavy math, but the architecture is mine. I'm looking for MLSys veterans to tell me where this will break.
