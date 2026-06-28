@@ -1,14 +1,26 @@
+**HollowCoreLLM is an experimental research prototype, not a trained foundation model.
+The current goal is to validate whether the architecture can train stably at small scale before attempting larger long-context runs.**
+
 # HollowCoreLLM
 
-**Experimental research prototype. Not a trained foundation model.**
+[![Weights & Biases — live run](https://img.shields.io/badge/W%26B-live%20training%20run-FFBE00?logo=weightsandbiases&logoColor=black)](https://wandb.ai/HollowCore-/HollowCoreLLM/runs/7xiper3h)
 
-HollowCoreLLM is a from-scratch byte-level language model architecture combining local FlashAttention, global Gated DeltaNet-2 recurrent memory, top-1 MoE, Attention Residual mixing, EMA-JEPA latent prediction, SIGReg regularization, and explicit tool-use heads.
+> ###  Live training run — real numbers, not a claim
+> A **100M-param / ~40M-active**, byte-level, **500K-context** model is training **right now on a single 4 GB RTX 3050 laptop**, resumed from checkpoint step 41.
+> **Live dashboard → [wandb.ai/HollowCore-/HollowCoreLLM](https://wandb.ai/HollowCore-/HollowCoreLLM/runs/7xiper3h)** — loss, throughput (tokens/s), VRAM and energy (tokens/kWh) stream straight off the machine.
+> Came here from Reddit? Open the dashboard. The loss curve, step log and hardware metrics are all there.
 
-The current goal is not to claim benchmark performance. The goal is to test whether the architecture can execute and train stably at long context under constrained hardware, then document the results honestly.
+I don't have a PhD or a math background. I'm a self-taught builder who learns by connecting dots. I built HollowCoreLLM because I saw a way to combine byte-level tokenization, DeltaNet-2, and JEPA heads that standard academia isn't looking at. I'm using AI to write the heavy math, but the architecture is mine.
 
-## Current Local Evidence Snapshot
+Experimental, from-scratch **byte-level language model** that explores two ideas in a single training loop:
 
-This run is a local execution proof on laptop hardware. It tests the real training stack with EMA cross-view JEPA enabled.
+1. **JEPA latent prediction** - the model predicts latent "thought" vectors of future context (cross-view and chunk-level), not just next tokens.
+2. **Tool-use policy** - an explicit head learns *when* and *which* tool to call, co-trained with language modeling.
+
+The global path is **linear attention (DeltaNet-2)**, so context can be trained in **chunks up to ~1M tokens** on a single GPU. ( current run: 500K / 2048-chunk )
+
+> **Status: experimental / pre-training.** This repository is a working training stack, not a finished model.
+> No *downstream benchmark* scores yet — but training is **live and fully instrumented**; see the dashboard above for real loss / throughput / energy curves.
 
 | Item | Value |
 |---|---|
@@ -21,43 +33,12 @@ This run is a local execution proof on laptop hardware. It tests the real traini
 | Model size | 102,043,891 total parameters |
 | Estimated active parameters | ~40,702,195 |
 | Context length | 500,000 tokens |
-| Chunk size | 2,048 |
+| Chunk size | 4096 |
 | Training mode | chunked long-context training |
 | JEPA mode | EMA cross-view JEPA + chunk JEPA + SIGReg |
 | Dataset mix | English, code, philosophy, tool-use, instruction, code-docs, HollowCore self-knowledge |
-| W&B run path | HollowCore-/HollowCoreLLM/7i0d4924 |
-| Metrics dashboard | https://wandb.ai/HollowCore-/HollowCoreLLM/runs/7i0d4924 |
 
-Important W&B note: the W&B run metadata shows `wandb_bridge.py` as the command because metrics are mirrored into W&B by a separate bridge process. The actual training process is `spawn_train_100m_500k_7mix_self_ema.py` running locally in WSL.
 
-Latest watcher snapshot:
-
-```text
-step=10
-elapsed=0.2691 h
-speed=94.29 steps/h
-tokens/sec=13095.25
-tokens_seen_est=5,000,000
-source=english
-loss=1.3510
-ce=3.8299
-cross_view_jepa=0.2125
-chunk_jepa=0.1210
-sigreg=0.6683
-router_aux=9.2967
-router_z=6.8874
-tool_decision=0.0000
-tool_id=0.0000
-peak_vram_step=2.394 GB
-gpu_memory=2909/4096 MB
-gpu_util=44%
-gpu_mem_util=37%
-temp=82 C
-power=47.97 W
-tok/J=272.988
-Wh/Mtok=1.017544
-alerts=none
-```
 
 ## What This Shows
 
@@ -90,6 +71,8 @@ The current evidence supports execution feasibility and early training stability
 ## Long-Context Training
 
 The sequence is processed in chunks. GDN-2 recurrent state and local-attention KV halo are carried across chunk boundaries, keeping activation memory bounded while allowing very long input contexts.
+
+Chunk 4096 fits in ~2.3 GB peak VRAM on the 4 GB RTX 3050 via gradient checkpointing of the per-chunk mixer/MoE. (  2048 ≈ 2.44 GB ) 
 
 The current local proof run uses 500K context with 2K chunks. Larger chunk sizes and larger models are separate experiments.
 
