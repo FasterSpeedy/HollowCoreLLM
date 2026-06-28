@@ -1,4 +1,4 @@
-"""Modal entry — spawn, train, HF checkpoint sync. Sve na Modal GPU."""
+"""Modal entry â€” spawn, train, HF checkpoint sync. Sve na Modal GPU."""
 
 from __future__ import annotations
 
@@ -118,7 +118,7 @@ def train_on_modal(
     push_hf: bool = True,
     chunk_train_size: int = 16384,
     jepa_bridge: bool = True,
-    no_ema: bool = True,
+    no_ema: bool = False,
     adam_8bit: bool = True,
 ) -> str:
     os.chdir("/root")
@@ -199,7 +199,7 @@ def main(
     spawn_only: bool = False,
     chunk_train_size: int = 16384,
     jepa_bridge: bool = True,
-    no_ema: bool = True,
+    no_ema: bool = False,
     adam_8bit: bool = True,
 ):
     if spawn_only:

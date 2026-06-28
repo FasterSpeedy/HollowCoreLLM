@@ -4,11 +4,14 @@ import torch
 
 from .byte_tokenizer import ByteTokenizer
 
-HR_TEXT = "Dobar dan! Ovo je hrvatski primjer za miješani curriculum nakon warmup faze."
+PARAPHRASE_TEXT = (
+    "This is an English paraphrase view for the EMA-JEPA target stream. "
+    "It keeps the same training signal without mixing in local-language fallback text."
+)
 CODE_SNIPPET = "def hello(name: str) -> str:\n    return f'Hello, {name}!'\n"
 STABLE_TEXT = (
-    "HollowCore uči razmišljati u weights, a znanje dohvaća tool-call protokolom. "
-    "Ovo je stabilan warmup tekst za prve korake treninga."
+    "HollowCore learns byte-level language patterns, latent future-context thoughts, "
+    "and explicit tool-use decisions inside one training loop."
 )
 
 
@@ -24,7 +27,7 @@ def view_b_for(category: str, view: str, tok: ByteTokenizer, seq_len: int) -> di
             return _rows(tok, STABLE_TEXT, seq_len)
         return _rows(tok, CODE_SNIPPET, seq_len)
     if view == "paraphrase":
-        return _rows(tok, HR_TEXT, seq_len)
+        return _rows(tok, PARAPHRASE_TEXT, seq_len)
     if view == "context_tool":
         parts: list[str | int] = [
             "USER: find docs\nASSISTANT: ",

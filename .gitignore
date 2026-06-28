@@ -9,7 +9,7 @@ venv/
 .env
 .env.*
 
-# Model weights / checkpoints / manifests (huge or generated — never commit)
+# Model weights / checkpoints / manifests (huge or generated - never commit)
 *.pt
 *.ckpt
 *.safetensors
@@ -38,3 +38,25 @@ STATUS.txt
 BRANCH_POLICY.txt
 data/DATASETS-CATALOG.md
 data/datasets.example.json
+
+# Local proof runs / runtime evidence (do not commit)
+logs/
+wandb/
+wsl_live_mirror/
+evidence/
+evidence_*/
+proof_checkpoints*/
+checkpoint_samples/
+README_PROPOSED_*.md
+modal_prepare_*.py
+scripts/cleanup_wsl_live_mirror.ps1
+
+# Local token shards / prepared datasets
+data/local_tokens*/
+*.tokens.i16
+*.actions.bool
+*.decision.i16
+*.tool_id.i16
+*.idx.npy
+*.npy
+*.memmap

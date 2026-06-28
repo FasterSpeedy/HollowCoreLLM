@@ -136,15 +136,15 @@ class HollowCoreLLM(nn.Module):
             + cfg.tool_id_weight * tool_id_loss
         )
         metrics = {
-            "loss": float(total.detach().cpu()),
-            "ce": float(ce.detach().cpu()),
-            "cross_view_jepa": float(cross_jepa.detach().cpu()),
-            "chunk_jepa": float(chunk_jepa.detach().cpu()),
-            "sigreg": float(sigreg.detach().cpu()),
-            "router_aux": float(aux_total.detach().cpu()),
-            "router_z": float(z_total.detach().cpu()),
-            "tool_decision": float(tool_decision_loss.detach().cpu()),
-            "tool_id": float(tool_id_loss.detach().cpu()),
+            "loss": total.detach(),
+            "ce": ce.detach(),
+            "cross_view_jepa": cross_jepa.detach(),
+            "chunk_jepa": chunk_jepa.detach(),
+            "sigreg": sigreg.detach(),
+            "router_aux": aux_total.detach(),
+            "router_z": z_total.detach(),
+            "tool_decision": tool_decision_loss.detach(),
+            "tool_id": tool_id_loss.detach(),
         }
         return total, metrics
 
@@ -199,13 +199,13 @@ class HollowCoreLLM(nn.Module):
             )
             chunk_loss.backward()
             for key, val in chunk_metrics.items():
-                metrics_acc[key] = metrics_acc.get(key, 0.0) + val
+                metrics_acc[key] = metrics_acc.get(key, val.new_zeros(())) + val
             n_chunks += 1
             prev_thought = self.jepa.to_thought(hn).mean(dim=1).detach()
 
         if n_chunks == 0:
             return {"loss": 0.0}
-        return {k: v / n_chunks for k, v in metrics_acc.items()}
+        return {k: float((v / n_chunks).detach().cpu()) for k, v in metrics_acc.items()}
 
     def _run_backbone(
         self,
